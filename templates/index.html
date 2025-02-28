@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Contract Auditor Pro</title>
+    <!-- Updated Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/shield-alt.svg">
+    <link rel="shortcut icon" type="image/x-icon"
+        href="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/shield-alt.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+
+<body class="bg-light">
+    <div class="animated-background">
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg glass-nav">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-shield-alt brand-icon"></i>
+                <span class="brand-text">Smart Contract Auditor</span>
+            </a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item">
+                    <span class="nav-link">
+                        <i class="fas fa-robot"></i> AI-Powered Analysis
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container glass-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <form id="scanForm" method="POST" action="/">
+                            <div class="editor-container mb-3">
+                                <div class="editor-header d-flex justify-content-between align-items-center p-2">
+                                    <span class="h6 mb-0"><i class="fas fa-code"></i> Solidity Code</span>
+                                    <button type="button" id="clearBtn" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-eraser"></i> Clear
+                                    </button>
+                                </div>
+                                <textarea name="contract_code" class="form-control"
+                                    placeholder="// Paste your Solidity code here...">{{ contract_code if contract_code else '' }}</textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" id="scanButton" class="btn btn-primary btn-lg">
+                                    <span class="button-text"><i class="fas fa-search"></i> Scan Contract</span>
+                                    <span class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {% if error %}
+                <div class="alert alert-danger mt-4" role="alert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ error }}</span>
+                </div>
+                {% endif %}
+
+                {% if results %}
+                <div class="results-container mt-4">
+                    <div class="row stats-panel">
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body text-center">
+                                    <h3 class="stat-number">{{ results.stats.Critical }}</h3>
+                                    <div class="stat-label">Critical</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Repeat for High, Medium, Low with appropriate Bootstrap colors -->
+                    </div>
+
+                    <div class="findings-list mt-4">
+                        {% for finding in results.findings %}
+                        <div class="card mb-3 finding-card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">{{ finding.name }}</h5>
+                                <span class="badge bg-{{ finding.severity.lower() }}">{{ finding.severity }}</span>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">{{ finding.description }}</p>
+                                <div class="code-block bg-light p-3 rounded">
+                                    <small class="text-muted">Line {{ finding.line }}:</small>
+                                    <pre><code>{{ finding.code }}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
